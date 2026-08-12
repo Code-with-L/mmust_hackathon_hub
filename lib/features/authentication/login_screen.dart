@@ -8,15 +8,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  String errorMessage = "";
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             const SizedBox(height: 32),
+
             TextField(
               controller: emailController,
               decoration: const InputDecoration(
@@ -53,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 prefixIcon: Icon(Icons.email),
               ),
             ),
+
             const SizedBox(height: 16),
 
             TextField(
@@ -64,19 +69,48 @@ class _LoginScreenState extends State<LoginScreen> {
                 prefixIcon: Icon(Icons.lock),
               ),
             ),
+
+            const SizedBox(height: 16),
+
+            Text(errorMessage),
+
             const SizedBox(height: 24),
 
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  print(emailController.text);
-                  print(passwordController.text);
+                  final email = emailController.text.trim();
+                  final password = passwordController.text;
+
+                  if (email.isEmpty || password.isEmpty) {
+                    setState(() {
+                      errorMessage = "Please fill in all fields.";
+                    });
+                    return;
+                  } else {
+                    if (email == "admin@mmust.com" &&
+                        password == "12345678") {
+                      // Successful login
+                      setState(() {
+                        errorMessage = "";
+                      });
+
+                      emailController.clear();
+                      passwordController.clear();
+                    } else {
+                      setState(() {
+                        errorMessage = "Incorrect email or password.";
+                      });
+                    }
+                  }
+
+                  print(email);
+                  print(password);
                 },
                 child: const Text("Login"),
               ),
             ),
-
           ],
         ),
       ),
